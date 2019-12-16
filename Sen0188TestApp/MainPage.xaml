@@ -1,0 +1,112 @@
+﻿<Page
+    x:Class="Sen0188TestApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sen0188TestApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:SEN0188="using:FingerPrintSensor_SEN0188"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <ScrollViewer>
+        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="9*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+
+
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" x:Name="pageTitle" Text="FingerPrint Sensor SEN0188 - Testapplication" Style="{StaticResource HeaderTextBlockStyle}" 
+                        IsHitTestVisible="false" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,0,0"/>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Margin="0,0,0,0">
+            <TextBlock Text="Select Device:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <ListBox x:Name="ConnectDevices" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollMode="Enabled" ItemsSource="{x:Bind Devices}" Width="400" Height="80" Background="Gray">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType ="SEN0188:SerDevice">
+                        <TextBlock Text="{x:Bind Id,Mode=OneWay}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Orientation="Horizontal">
+                <Button Name="comPortInput" Margin="0,0,0,0" Content="Connect" Click="comPortInput_Click"/>
+                <Button Name="closeDevice"  Margin="0,0,0,0" Content="Disconnect" Click="closeDevice_Click"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Vertical" Margin="0,0,0,0">
+            <RadioButton x:Name = "check_Device_Connected" Content="Sensor Connected" IsChecked="False"/>
+            <RadioButton x:Name = "check_Device_Initialize" Content="Sensor Initialize" IsChecked="False"/>
+            <TextBlock Name="recv_CMD_RegistrationState"  Text="..."  Width="200" Height="auto"/>
+            <RadioButton x:Name = "check_CMD_RegistrationState" Content="Registration completed" IsChecked="False"/>
+            <TextBlock Name="recv_CMD_Registration_PageID"  Text="..."  Width="200" Height="auto"/>
+
+        </StackPanel>
+
+   
+        <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Vertical" Margin="0,0,0,0">
+            <RadioButton x:Name = "check_CMD_ProcessingOK" Content="Command ok" IsChecked="false"/>
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Name="recv_CMD_Verifiying_PageId"  Text="..."  Width="100" Height="auto"/>
+                <TextBlock Name="recv_CMD_Verifiying_MatchScore"  Text="..."  Width="100" Height="auto"/>
+            </StackPanel>
+
+            <TextBlock Name="rcv_CMD_CHARUpload" Text="..." Width="auto" Height="auto"/>
+            <TextBox
+                x:Name="status" TextWrapping="Wrap" IsReadOnly="True" Width="460" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" BorderBrush="White"/>
+
+        </StackPanel>
+
+
+        <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Vertical" Margin="10,0,0,0">
+
+            <Button Name="CMD_Initialize" Margin="5,5" Content="CMD_Initialize"  Click="CMD_Command_Click"/>
+
+            <Button Name="CMD_Verifiying" Margin="5,5" Content="CMD_Verifiying"  Click="CMD_Command_Click"/>
+            <Button Name="CMD_AutoVerifiying" Margin="5,5" Content="CMD_AutoVerifiying"  Click="CMD_Command_Click"/>
+
+            <Button x:Name="CMD_Registration" Margin="5,5" Content="CMD_Registration"  Click="CMD_Command_Click"/>
+            <Button x:Name="CMD_AutoRegistration" Margin="5,5" Content="CMD_AutoRegistration"  Click="CMD_Command_Click"/>
+            <Button x:Name="CMD_DELFingerID" Margin="5,5" Content="CMD_DELFingerID"  Click="CMD_Command_Click"/>
+            <Button Name="CMD_CHARUpload" Margin="5,5" Content="CMD_CHARUpload"  Click="CMD_Command_Click"/>
+            <Button Name="CMD_SetSensorID" Margin="5,5" Content="CMD_SetSensorID"  Click="CMD_Command_Click"/>
+            </StackPanel>
+
+
+        <StackPanel Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Vertical"  Margin="10,0,0,0">
+
+            <ListView Width="200" x:Name="FingerLib" SelectionChanged="FingerLib_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollMode="Enabled"  ItemsSource="{x:Bind FilledFingerLib}" Margin="0,0,0,0">
+
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+
+                    <DataTemplate >
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock  Text="{Binding}"  TextWrapping="NoWrap" Margin="0,0,0,0"/>
+                        </StackPanel>
+
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+      
+        </StackPanel>
+
+
+
+
+    </Grid>
+    </ScrollViewer>
+</Page>

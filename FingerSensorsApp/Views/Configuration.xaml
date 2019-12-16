@@ -1,0 +1,432 @@
+﻿<Page
+    x:Class="FingerSensorsApp.Views.Configuration"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FingerSensorsApp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:SEN0188="using:FingerPrintSensor_SEN0188"
+    xmlns:SEN0188_SQLite="using:SEN0188_SQLite"
+    xmlns:Models="using:FingerSensorsApp.Models"
+    xmlns:helper="using:FingerSensorsApp.Helpers"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+
+        <helper:BoolToVisibilityConverter x:Key="BoolToVis" />
+        <helper:IsEnableConverter x:Key="IsEnableConverter" />
+
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
+
+
+        <ScrollViewer   Grid.Row="0" Grid.Column="0" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Hidden">
+
+            <StackPanel Orientation="Vertical">
+                <Pivot x:Name="PivotSocketListener"  ItemsSource="{x:Bind GPIOEnvironmentConnectors}"   Margin="0,0,0,0">
+                    <Pivot.HeaderTemplate >
+                        <DataTemplate  x:DataType="Models:GPIOEnvironmentConnector">
+                            <TextBlock   FontSize="20" Height="auto" Text= "{x:Bind VisibleKeyName, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </Pivot.HeaderTemplate>
+                    <Pivot.ItemTemplate>
+
+                        <DataTemplate x:DataType="Models:GPIOEnvironmentConnector">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+
+                                <StackPanel Grid.Row ="0" Orientation="Horizontal">
+                                    <ToggleSwitch   FontSize ="16" Header="Enable GPIO Modul" OffContent="OFF" OnContent="ON" IsOn="{x:Bind GPIOConnectorEnable,  Mode=TwoWay}"/>
+                                    <StackPanel  Orientation="Horizontal">
+                                        <TextBox x:Name="Hostname"  KeyUp="OnKeyUpHandler"  PlaceholderText="Insert Remote Host"   Text="{x:Bind HostName,  Mode=TwoWay}" Header="Remote Hostname" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top" Width="200" />
+                                        <TextBox x:Name="Portname"  KeyUp="OnKeyUpHandler"  PlaceholderText="Insert Remote Port" InputScope="Number" MaxLength="4"   Text="{x:Bind Port, Mode=TwoWay}"  Header="Remote PortName" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top" Width="200" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Row ="1" Orientation="Vertical">
+
+
+                                    <ListView x:Name="_GPIOBanks" Width="auto" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind OutPuts.GPIOBanks}"  >
+
+                                        <ListView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Vertical" />
+                                            </ItemsPanelTemplate>
+                                        </ListView.ItemsPanel>
+
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="Models:GPIOObjects">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel  Margin="0,0" Grid.Column="1" Orientation="Vertical">
+                                                        <TextBlock  FontSize ="20"  Text="{x:Bind BankName}" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+                                                        <ListView Margin="0,10" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind GPIOs}"  >
+
+                                                            <ListView.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <StackPanel Orientation="Vertical" />
+                                                                </ItemsPanelTemplate>
+                                                            </ListView.ItemsPanel>
+
+                                                            <ListView.ItemTemplate>
+                                                                <DataTemplate x:DataType="Models:GPIOObject">
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="4*"/>
+                                                  
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition Height="*"/>
+                                                                            <RowDefinition Height="*"/>
+                                                                        </Grid.RowDefinitions>
+                                                                        <StackPanel  Grid.Column="0" Grid.Row ="0" Orientation="Vertical">
+                                                                            <ToggleSwitch FontSize ="16"  Header="{x:Bind PinName,Mode=OneTime}" OffContent="OFF" OnContent="ON" IsOn="{x:Bind IsEnabled,Mode=TwoWay}" />
+    
+                                                                        </StackPanel>
+                                                                        <StackPanel Grid.Column="1" Grid.Row ="0" Orientation="Horizontal" Visibility="{x:Bind IsEnabled, Mode=OneWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}" >
+                                                                            <TextBox FontSize ="16"  Header="View Name" Text="{x:Bind ViewName, Mode=TwoWay}" Width="200" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                                            <TextBox FontSize ="16"  MaxLength="1"  InputScope="Number" Header="Init Value" Text="{x:Bind InitValue, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                                            <TextBox FontSize ="16"  MaxLength="4"  InputScope="Number" Header="Pulse Time" Text="{x:Bind PulseTime, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                                        </StackPanel>
+
+                                                                        <StackPanel  Grid.Column="0" Grid.Row ="1" Orientation="Vertical">
+                                                                             <ToggleSwitch FontSize ="16"  Header="enable Output Event" OffContent="OFF" OnContent="ON" IsOn="{x:Bind IsEventEnabled,Mode=TwoWay}" />
+                                                                        </StackPanel>
+                                                                        <StackPanel Grid.Column="1" Grid.Row ="1"  Orientation="Horizontal" Visibility="{x:Bind IsEventEnabled, Mode=OneWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}" >
+                                                                            <TextBox FontSize ="16" Header="Event Name" Text="{x:Bind EventName, Mode=TwoWay}" Width="180" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                                            <ComboBox FontSize ="16" Margin="0,17" Width="180"  Tag="{Binding}" Loaded="AccessCombo_Loaded" Header ="Access Rights" SelectionChanged="AccessCombo_SelectionChanged" >
+                                                                                <ComboBox.ItemTemplate>
+                                                                                    <DataTemplate  x:DataType="SEN0188_SQLite:DBDataSetAccessBit">
+                                                                                        <TextBlock>
+                                                                                            <Run Text="{x:Bind BitNumber}"/>
+                                                                                              <Run Text=": "/>
+                                                                                            <Run Text="{x:Bind BitName}"/>
+                                                                                        </TextBlock>
+                                                                                    </DataTemplate>
+                                                                                </ComboBox.ItemTemplate>
+                                                                            </ComboBox>
+                                                                        </StackPanel>
+                                                                        
+
+                                                                    </Grid>
+                                                                </DataTemplate>
+
+                                                            </ListView.ItemTemplate>
+
+
+                                                        </ListView>
+
+
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DataTemplate>
+
+                                        </ListView.ItemTemplate>
+
+
+                                    </ListView>
+                                    <ListView x:Name="_GPIOInputBanks" Width="auto" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind Inputs.GPIOBanks}"  >
+
+                                        <ListView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Vertical" />
+                                            </ItemsPanelTemplate>
+                                        </ListView.ItemsPanel>
+
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="Models:GPIOObjects">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="4*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel  Grid.Column="1" Margin="0,0" Orientation="Vertical">
+                                                        <TextBlock FontSize ="20"  Text="{x:Bind BankName}" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+                                                        <ListView Margin="0,10" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind GPIOs}"  >
+                                                            <ListView.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <StackPanel Orientation="Vertical" />
+                                                                </ItemsPanelTemplate>
+                                                            </ListView.ItemsPanel>
+
+                                                            <ListView.ItemTemplate>
+                                                                <DataTemplate x:DataType="Models:GPIOObject">
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition Height="*"/>
+                                                                            <RowDefinition Height="*"/>
+                                                                        </Grid.RowDefinitions>
+
+                                                                        <StackPanel Grid.Column ="0" Grid.Row="0" Orientation = "Horizontal"  >
+                                                                            <ToggleSwitch FontSize ="16" Header="{x:Bind PinName,Mode=OneTime}" OffContent="OFF" OnContent="ON" IsOn="{x:Bind IsEnabled,Mode=TwoWay}"/>
+                                                                        </StackPanel>
+                                                                        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Visibility="{x:Bind IsEnabled, Mode=OneWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}">
+                                                                            <TextBox FontSize ="16"   Header="View Name" Text="{x:Bind ViewName, Mode=TwoWay}"  Width="200"  TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                                            <TextBox FontSize ="16"  MaxLength="1"  InputScope="Number" Header="Init Value" Text="{x:Bind InitValue, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                                        </StackPanel>
+                                                                        <StackPanel Grid.Column ="0" Grid.Row="1" Orientation="Horizontal"  >
+                                                                            <ToggleSwitch FontSize ="16" Header="enable Input Event" OffContent="OFF" OnContent="ON" IsOn="{x:Bind IsEventEnabled,Mode=TwoWay}" />
+
+                                                                        </StackPanel>
+                                                                        <StackPanel Grid.Column ="1" Grid.Row="1" Orientation="Horizontal" Visibility="{x:Bind IsEventEnabled, Mode=OneWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}" >
+                                                                            <TextBox FontSize ="16"  Header="Event Name" Text="{x:Bind EventName, Mode=TwoWay}" Width="180" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                                            <!--
+                                                                 
+                                                                            <ComboBox FontSize ="16" Margin="0,17" Width="180"  Tag="{Binding}" Loaded="AccessCombo_Loaded" Header ="Access Rights" SelectionChanged="AccessCombo_SelectionChanged" >
+                                                                                <ComboBox.ItemTemplate>
+                                                                                    <DataTemplate  x:DataType="SEN0188_SQLite:DBDataSetAccessBit">
+                                                                                        <TextBlock>
+                                                                                            <Run Text="{x:Bind BitNumber}"/>
+                                                                                              <Run Text=": "/>
+                                                                                            <Run Text="{x:Bind BitName}"/>
+                                                                                        </TextBlock>
+                                                                                    </DataTemplate>
+                                                                                </ComboBox.ItemTemplate>
+                                                                            </ComboBox>
+           -->
+                                                                        </StackPanel>
+
+                                                                    </Grid>
+                                                                </DataTemplate>
+
+                                                            </ListView.ItemTemplate>
+
+
+                                                        </ListView>
+
+
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DataTemplate>
+
+                                        </ListView.ItemTemplate>
+
+
+                                    </ListView>
+                                </StackPanel>
+
+
+
+
+                            </Grid>
+
+
+                        </DataTemplate>
+                    </Pivot.ItemTemplate>
+
+                </Pivot>
+
+<!--
+                <StackPanel Orientation="Horizontal">
+                    <ToggleSwitch x:Name="GPIOEnable"  FontSize ="16" Header="Enable GPIO Modul" OffContent="OFF" OnContent="ON" IsOn="{x:Bind Environment.GPIOConnectorEnable,  Mode=TwoWay}"/>
+                    <StackPanel  Orientation="Horizontal" Visibility="{x:Bind Environment.GPIOConnectorEnable, Mode=TwoWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}">
+                        <TextBox x:Name="Hostname"  KeyUp="OnKeyUpHandler"  PlaceholderText="Insert Remote Host"   Text="{x:Bind Environment.HostName,  Mode=TwoWay}" Header="Remote Hostname" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top" Width="200" />
+                        <TextBox x:Name="Portname"  KeyUp="OnKeyUpHandler"  PlaceholderText="Insert Remote Port" InputScope="Number" MaxLength="4"   Text="{x:Bind Environment.Port, Mode=TwoWay}"  Header="Remote PortName" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top" Width="200" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Visibility="{x:Bind Environment.GPIOConnectorEnable, Mode=TwoWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}">
+
+
+                    <ListView x:Name="_GPIOBanks" Width="auto" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind OutPuts.GPIOBanks}"  >
+
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="Models:GPIOObjects">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel  Margin="0,0" Grid.Column="1" Orientation="Vertical">
+                                        <TextBlock  FontSize ="20"  Text="{x:Bind BankName}" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+                                        <ListView Margin="0,10" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind GPIOs}"  >
+
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Vertical" />
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate x:DataType="Models:GPIOObject">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel  Margin="0,0" Grid.Column="0" Orientation="Vertical">
+                                                            <ToggleSwitch FontSize ="16" Header="{x:Bind PinName,Mode=OneTime}" OffContent="OFF" OnContent="ON" IsOn="{x:Bind IsEnabled,Mode=TwoWay}"  Loaded="ToggleSwitch_Enabled"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Visibility="{x:Bind IsEnabled, Mode=OneWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}" >
+                                                            <TextBox FontSize ="16"  Header="View Name" Text="{x:Bind ViewName, Mode=TwoWay}" Width="200" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                            <TextBox FontSize ="16"  MaxLength="1"  InputScope="Number" Header="Init Value" Text="{x:Bind InitValue, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                            <TextBox FontSize ="16"  MaxLength="4"  InputScope="Number" Header="Pulse Time" Text="{x:Bind PulseTime, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+
+                                                        </StackPanel>
+
+                                                    </Grid>
+                                                </DataTemplate>
+
+                                            </ListView.ItemTemplate>
+
+
+                                        </ListView>
+
+
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+
+                        </ListView.ItemTemplate>
+
+
+                    </ListView>
+                    <ListView x:Name="_GPIOInputBanks" Width="auto" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind Inputs.GPIOBanks}"  >
+
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="Models:GPIOObjects">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel  Grid.Column="1" Margin="0,0" Orientation="Vertical">
+                                        <TextBlock FontSize ="20"  Text="{x:Bind BankName}" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+                                        <ListView Margin="0,10" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind GPIOs}"  >
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Vertical" />
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate x:DataType="Models:GPIOObject">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Orientation="Horizontal" Margin="20,0"  Grid.Column="0" >
+                                                            <ToggleSwitch FontSize ="16" Header="{x:Bind PinName,Mode=OneTime}" OffContent="OFF" OnContent="ON" IsOn="{x:Bind IsEnabled,Mode=TwoWay}"  Loaded="ToggleSwitch_Enabled"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="1" Margin="0,0" Orientation="Horizontal" Visibility="{x:Bind IsEnabled, Mode=OneWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}">
+                                                            <TextBox FontSize ="16"   Header="View Name" Text="{x:Bind ViewName, Mode=TwoWay}"  Width="200"  TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                            <TextBox FontSize ="16"  MaxLength="1"  InputScope="Number" Header="Init Value" Text="{x:Bind InitValue, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                        </StackPanel>
+
+                                                    </Grid>
+                                                </DataTemplate>
+
+                                            </ListView.ItemTemplate>
+
+
+                                        </ListView>
+
+
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+
+                        </ListView.ItemTemplate>
+
+
+                    </ListView>
+                </StackPanel>
+                -->
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer Grid.Row="0" Grid.Column="1" Margin="0,10" VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Hidden">
+            <StackPanel>
+
+            <TextBlock Text="Add / Delete / Connector "/>
+            <StackPanel Margin="0,10" Orientation="Horizontal">
+                <AppBarButton Label="Add" Icon="Add"  Click="{x:Bind ButtonAddConnector}"/>
+                <AppBarButton Label ="Delete" Icon="Delete" Click="{x:Bind ButtonDeleteConnecor}"/>
+            </StackPanel>
+            <StackPanel  Orientation="Vertical" Margin="0,30">
+                <ToggleSwitch x:Name="SensorEnable"  FontSize ="16" Header="Sensor SEN0188 Enable" OffContent="OFF" OnContent="ON" IsOn="{x:Bind Environment.ConnectorSEN0188Enable,  Mode=TwoWay}"/>
+                <StackPanel  Orientation="Vertical" Visibility="{x:Bind Environment.ConnectorSEN0188Enable, Mode=TwoWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}">
+
+
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="available Serial Devices: "></TextBlock>
+                        <ListBox x:Name="ConnectDevices" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollMode="Enabled"  ItemsSource="{x:Bind Devices}" Width="auto" Height="auto" Background="Gray">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType ="SEN0188:SerDevice">
+                                    <TextBlock Text="{x:Bind Id,Mode=OneWay}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBox x:Name="status" TextWrapping="Wrap" IsReadOnly="True" Width="460" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" BorderBrush="White"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Margin ="0,0" Orientation="Horizontal">
+                            <AppBarButton  IsEnabled="{x:Bind Environment.SensorConnecorInitialized , Mode=OneWay, Converter= {StaticResource IsEnableConverter},ConverterParameter=Negation}"  Margin="0,0" Label ="Connect Device" Icon="Add" Click="{x:Bind comPortInput_Click}"/>
+                            <AppBarButton  IsEnabled="{x:Bind Environment.SensorConnecorInitialized , Mode=OneWay}" Margin="0,0" Label ="Close Device" Icon="Delete" Click="{x:Bind closeDevice_Click}"/>
+                            <AppBarButton x:Name="ImportDataBase" Margin="0,0" Label ="Import Finger Database" Icon="Add" Click="{x:Bind ImportDataBase_Click}"/>
+                            <AppBarButton x:Name="ExportDataBase" Margin="0,0" Label ="Export Finger Database" Icon="Delete" Click="{x:Bind ExportDataBase_Click}"/>
+
+                         </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin ="0,0" Orientation="Horizontal">
+                        <AppBarButton x:Name="InitFingerDataBase"  Margin="0,0" Label ="Init Finger Database" Icon="Delete" Click="{x:Bind InitFingerDataBase_Click}"/>
+                        <AppBarButton x:Name="InitEventDataBase"   Margin="0,0" Label ="Init Event Database" Icon="Delete" Click="{x:Bind InitEventDataBase_Click}"/>
+                        <TextBox  InputScope="Number" MaxLength="3"  PlaceholderText="from 10...365 days"   Text="{x:Bind Environment.EventHistoryinDays,  Mode=TwoWay}" Header="Event History in Days" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto" />
+
+                    </StackPanel>
+
+
+
+                </StackPanel>
+
+            </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+
+     
+
+    </Grid>
+</Page>

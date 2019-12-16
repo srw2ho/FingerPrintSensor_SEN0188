@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/ARM
+/Debug/FingerPrintSensor_SEN0188
+/FingerPrintSensor_SEN0188/ARM
+/FingerPrintSensor_SEN0188/Debug
+/FingerPrintSensor_SEN0188/x64
+/FingerSensorsApp/bin
+/FingerSensorsApp/obj
+/Sen0188TestApp/Generated Files
+/Sen0188TestApp/x64/Debug
+/SEN0188_SQLite/bin
+/SEN0188_SQLite/obj
+/x64

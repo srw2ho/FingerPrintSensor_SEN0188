@@ -1,0 +1,200 @@
+﻿<Page
+    x:Class="FingerSensorsApp.Views.FingerSensorManager"
+    xmlns:SEN0188_SQLite="using:SEN0188_SQLite"
+    
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helper="using:FingerSensorsApp.Helpers"
+    Style="{StaticResource PageStyle}"
+    mc:Ignorable="d">
+    <Page.Resources>
+
+        <helper:BoolToVisibilityConverter x:Key="BoolToVis" />
+        <helper:IsEnableConverter x:Key="IsEnableConverter" />
+
+    </Page.Resources>
+
+    <Grid x:Name="ContentArea" Margin="{StaticResource MediumLeftRightMargin}">
+        <Grid
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+            <!--
+                The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
+                Place your content here.
+            -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
+
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <AppBarButton IsEnabled="{x:Bind Environment.SensorConnecorInitialized , Mode=OneWay, Converter= {StaticResource IsEnableConverter},ConverterParameter=Negation}"  Margin="0,0"  Click="startRecording_Click" Width="45" Icon="Play" Label="Start" />
+
+                <AppBarButton   IsEnabled="{x:Bind Environment.SensorConnecorInitialized , Mode=OneWay}"  Margin="0,0"  Click="stopRecording_Click" Width="45" Icon="Stop" Label="Stop" />
+
+
+            </StackPanel>
+            <ScrollViewer Grid.Column ="1"  VerticalScrollBarVisibility="Auto">
+
+                <StackPanel>
+
+                    <ListView  x:Name ="DataSets" SelectionMode="Single"  IsItemClickEnabled = "False" ItemsSource="{x:Bind SensorDataSets}"  SelectedIndex="{x:Bind DataSets.SelectedIndex, Mode=TwoWay}" SelectionChanged="DataSets_SelectionChanged" >
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="SEN0188_SQLite:DBDataSet">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image  Height ="40" Width="40"  Visibility="{x:Bind FingerTemplateAssigned,Mode=OneWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}"  Source="ms-appx:///images/Signal_1.bmp"  Stretch="UniformToFill"  Margin="0,0" />
+
+                                        <StackPanel  Margin="10,0" Grid.Column="1" Orientation="Vertical">
+                                        <StackPanel  Orientation="Horizontal">
+                                            <TextBlock Foreground="Blue"  Text="{x:Bind FirstName, Mode=OneWay }" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+                                            <TextBlock Foreground="Blue"  Text="-" TextWrapping="Wrap"  VerticalAlignment="Top"/>
+                                            <TextBlock Foreground="Blue"  Text="{x:Bind SecondName, Mode=OneWay }"  TextWrapping="Wrap"   VerticalAlignment="Top"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Foreground="Blue"  Text="{x:Bind FingerID, Mode=OneWay }"  TextWrapping="Wrap"   VerticalAlignment="Top"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBlock Foreground="Blue"  Text="{x:Bind CreationTime.ToShortDateString(), Mode=OneWay}"  TextWrapping="Wrap"   VerticalAlignment="Top"/>
+                                            <!--
+                                               <TextBlock Foreground="Blue"  Text="{x:Bind SensorIdasString, Mode=OneWay}"  TextWrapping="Wrap"   VerticalAlignment="Top"/>
+                                            -->
+
+                                        </StackPanel>
+
+
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+
+                        </ListView.ItemTemplate>
+
+
+                    </ListView>
+
+
+                </StackPanel>
+            </ScrollViewer>
+            <ScrollViewer Grid.Column="2">
+                <StackPanel  Orientation="Vertical" >
+
+
+                    <StackPanel x:Name="DataInputPanel"   Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox  Width="200"  Text="{Binding SelectedItem.FirstName , ElementName=DataSets, Mode=TwoWay}" Header="First Name" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top"/>
+                            <TextBox  Width="200"  Text="{Binding SelectedItem.SecondName, ElementName=DataSets, Mode=TwoWay}" Header="Second Name" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top"  />
+                            <TextBox  Width="200"  InputScope="Number" Text="{Binding SelectedItem.FingerID, ElementName=DataSets, Mode=OneWay}" Header="FingerID" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top"  />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox  Width="200"  Text="{Binding SelectedItem.Info, ElementName=DataSets, Mode=TwoWay}" Header="Info" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top"  />
+                            <TextBox  Width="200"  InputScope="Number"  Text="{Binding SelectedItem.MatchScore, ElementName=DataSets, Mode=TwoWay}" Header="MatchScore" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top"  />
+                            <TextBox  Width="200"  Text="{Binding SelectedItem.SensorIdasString, ElementName=DataSets, Mode=OneWay}" Header="SensorID" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top"  />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox  Width="200"  Text="{Binding SelectedItem.CreationTime , ElementName=DataSets, Mode=OneWay}" Header="CreationTime" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top"/>
+                        </StackPanel>
+                        <StackPanel  Orientation="Vertical">
+                            <StackPanel  Orientation="Horizontal">
+                                <ToggleSwitch  Header="Master Access" OffContent="OFF" OnContent="ON" IsOn="{Binding SelectedItem.AccessRights_Bit0, ElementName=DataSets, Mode=TwoWay}"/>
+                                <ToggleSwitch  Header="bit 0" OffContent="OFF" OnContent="ON" IsOn="{Binding SelectedItem.AccessRights_Bit1, ElementName=DataSets, Mode=TwoWay}"/>
+                                <ToggleSwitch  Header="bit 1" OffContent="OFF" OnContent="ON" IsOn="{Binding SelectedItem.AccessRights_Bit2, ElementName=DataSets, Mode=TwoWay}"/>
+                                <ToggleSwitch  Header="bit 3" OffContent="OFF" OnContent="ON" IsOn="{Binding SelectedItem.AccessRights_Bit3, ElementName=DataSets, Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel  Orientation="Horizontal">
+
+                                <ToggleSwitch  Header="bit 4" OffContent="OFF" OnContent="ON" IsOn="{Binding SelectedItem.AccessRights_Bit4, ElementName=DataSets, Mode=TwoWay}"/>
+                                <ToggleSwitch  Header="bit 5" OffContent="OFF" OnContent="ON" IsOn="{Binding SelectedItem.AccessRights_Bit5, ElementName=DataSets, Mode=TwoWay}"/>
+                                <ToggleSwitch  Header="bit 6" OffContent="OFF" OnContent="ON" IsOn="{Binding SelectedItem.AccessRights_Bit6, ElementName=DataSets, Mode=TwoWay}"/>
+                                <ToggleSwitch  Header="bit 7" OffContent="OFF" OnContent="ON" IsOn="{Binding SelectedItem.AccessRights_Bit7, ElementName=DataSets, Mode=TwoWay}"/>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="0,10" Orientation="Vertical">
+                        <TextBlock Text="Delete / Edit Template"/>
+                        <StackPanel Margin="0,10" Orientation="Horizontal">
+                            <AppBarButton x:Name="addTemplate" IsEnabled="{x:Bind Environment.IsAuthorized , Mode=OneWay}" Margin="0,0" Label ="add User" Icon="Add" Click="{x:Bind ButtonAddTemplate}"/>
+                            <AppBarButton x:Name="addLoggedinUser" IsEnabled="{x:Bind Environment.IsLoggedIn , Mode=OneWay}" Margin="0,0" Label ="add Logged In User" Icon="Add" Click="{x:Bind ButtonAddLoggedInUserTemplate}"/>
+                            <AppBarButton x:Name="delTemplate" IsEnabled="{x:Bind Environment.IsAuthorized , Mode=OneWay}" Margin="0,0" Label ="Delete Template" Icon="Delete" Click="{x:Bind ButtonDeleteTemplate}"/>
+                            <AppBarButton x:Name="editTemplate" IsEnabled="{x:Bind Environment.IsAuthorized , Mode=OneWay}" Margin="0,0" Label ="Edit Template" Icon="Edit"   Click="{x:Bind ButtonEditTemplate}"/>
+                            <AppBarButton x:Name="delTable"    IsEnabled="{x:Bind Environment.IsAuthorized , Mode=OneWay}" Margin="50,0" Label ="Delete FingerTable" Icon="Delete"  Click="{x:Bind ButtondelFingerTable}"/>
+                            <AppBarButton x:Name="InitdataBase" IsEnabled="{x:Bind Environment.IsAuthorized , Mode=OneWay}" Margin="0,0" Label ="Init Finger Database" Icon="Add"  Click="{x:Bind ButtoninitDatabase}"/>
+
+
+
+                        </StackPanel>
+
+                        <TextBlock Text="Sensor Commands"/>
+                        <StackPanel Margin="0,10" Orientation="Horizontal">
+                            <AppBarButton x:Name="InitSensor"  Margin="0,0" IsEnabled="{x:Bind Environment.SensorInitialized , Mode=OneWay, Converter= {StaticResource IsEnableConverter},ConverterParameter=Negation}" Label ="Init Sensor" Icon="Import"  Click="{x:Bind ButtonComWithSensor}"/>
+                            <AppBarButton x:Name="VerifyFingerId" Margin="0,0" IsEnabled="{x:Bind Environment.SensorInitializedandIsAuthorized , Mode=OneWay}"  Label ="Verfify FingerId" Icon="View"  Click="{x:Bind ButtonComWithSensor}"/>
+                            <AppBarButton x:Name="RegisterFingerId" Margin="0,0" IsEnabled="{x:Bind Environment.SensorInitializedandIsAuthorized , Mode=OneWay}"  Label ="Register FingerId" Icon="View"  Click="{x:Bind ButtonComWithSensor}"/>
+                            <AppBarButton x:Name="DeleteallFingerIs" IsEnabled="{x:Bind Environment.SensorInitializedandIsAuthorized , Mode=OneWay}" Label ="Delete all Templates" Icon="Delete"  Click="{x:Bind ButtonComWithSensor}"/>
+                            <AppBarButton x:Name="DownloadFingerId" Margin="0,0"  IsEnabled="{x:Bind Environment.SensorInitializedandIsAuthorized , Mode=OneWay}"  Label ="Download Template" Icon="Download"  Click="{x:Bind ButtonComWithSensor}"/>
+                            <AppBarButton x:Name="DownloadallFingerIds" Margin="0,0" IsEnabled="{x:Bind Environment.SensorInitializedandIsAuthorized , Mode=OneWay}"  Label ="Download all Templates" Icon="Download"  Click="{x:Bind ButtonComWithSensor}"/>
+                            <StackPanel Orientation="Vertical">
+                                <TextBox x:Name="SensorIDValue" MaxLength="20" IsEnabled="{x:Bind Environment.SensorInitializedandIsAuthorized , Mode=OneWay}"  Width="100"  InputScope="Number"  Header="SensorID" TextWrapping="Wrap"  Margin="0,0,0,0" VerticalAlignment="Top"  />
+                                <AppBarButton x:Name="SetSensorID" Margin="0,0" IsEnabled="{x:Bind Environment.SensorInitializedandIsAuthorized , Mode=OneWay}"  Label ="Set Sensor ID" Icon="Download"  Click="{x:Bind ButtonComWithSensor}"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+                        <StackPanel  HorizontalAlignment="Left" VerticalAlignment="Stretch" Orientation="Vertical"  Margin="10,0,0,0">
+                            <TextBlock x:Name="SensorCmdState" Margin="0,0"  Text="..."/>
+                            <TextBlock Margin="0,10"  Text="Saved Sensor FingerLibrary"/>
+                            <ListView Width="auto" x:Name="FingerLib"  ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollMode="Enabled"  ItemsSource="{x:Bind FilledFingerLib}" Margin="0,0,0,0">
+
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                <ListView.ItemTemplate>
+
+                                    <DataTemplate >
+                                        <StackPanel Orientation="Horizontal" >
+                                            <TextBlock  Text="{Binding}"  TextWrapping="NoWrap" Margin="0,0,0,0"/>
+                                        </StackPanel>
+
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+
+                            <!--
+                        <TextBlock Margin="0,10"  Text="Saved Sensor ID"/>
+                        <ListView Width="auto"  ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollMode="Enabled"  ItemsSource="{x:Bind SensorID}" Margin="0,0,0,0">
+
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+
+                                <DataTemplate >
+                                    <StackPanel Orientation="Horizontal" >
+                                        <TextBlock  Text="{Binding}"  TextWrapping="NoWrap" Margin="0,0,0,0"/>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                   -->
+
+                        </StackPanel>
+
+
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+        </Grid>
+    </Grid>
+</Page>
