@@ -125,7 +125,14 @@ namespace FingerSensorsApp.Models
                 if (Obj != null)
                 {
                     dblValue = (double)Obj;
-                    //   doInputPropertyUpdate = (dblValue != GPIOObj.PinValue);
+                    if (GPIOObj.GPIOtyp == GPIOObject.GPIOTyp.output)
+                    {
+                        if (GPIOObj.SetValue != dblValue) { 
+
+                            GPIOObj.SetValue = dblValue;
+                            UpdateInputPropertySets(GPIOObj);
+                        }
+                    }
                     GPIOObj.PinValue = dblValue;
                 }
             }

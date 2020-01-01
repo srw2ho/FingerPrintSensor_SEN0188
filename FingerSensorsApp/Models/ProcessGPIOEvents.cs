@@ -63,8 +63,6 @@ namespace FingerSensorsApp.Models
         }
         private List<GPIOObjectProcess> m_GPIOInputs;
 
-        //   private GPIOObjectProcess m_GPIOInput;
-
         private List<GPIOObjectProcess> m_GPIOOutputs;
 
         string m_Ident;
@@ -74,6 +72,7 @@ namespace FingerSensorsApp.Models
 
         GPIOEnvironmentConnector m_GPIOEnvironmentConnector;
         GPIOObject m_LookFor;
+        long m_FlankTicks;
         public ProcessGPIOEvents(string Ident)
         {
             m_Ident = Ident;
@@ -83,9 +82,20 @@ namespace FingerSensorsApp.Models
             m_GPIOEnvironmentConnector = null;
             m_InputState = inputState.waitforInitFlank;
             m_LookFor = null;
-            //   m_GPIOInput = new GPIOObjectProcess();
-
+            m_FlankTicks = 0;
         }
+
+        public ProcessGPIOEvents( ProcessGPIOEvents right)
+        {
+            m_Ident = right.m_Ident;
+            m_GPIOInputs = new List<GPIOObjectProcess>(right.m_GPIOInputs);
+            m_GPIOOutputs = new List<GPIOObjectProcess>(right.m_GPIOOutputs);
+            m_AccessRights = right.m_AccessRights;
+            m_GPIOEnvironmentConnector = right.m_GPIOEnvironmentConnector;
+            m_InputState = right.m_InputState;
+            m_FlankTicks = right.m_FlankTicks;
+        }
+
 
         public GPIOEnvironmentConnector GPIOEnvironmentConnector
         {
@@ -100,6 +110,15 @@ namespace FingerSensorsApp.Models
         }
 
 
+
+        public long FlankTicks
+        {
+            get
+            {
+                return m_FlankTicks;
+            }
+
+        }
 
         public string Ident
         {
@@ -159,6 +178,7 @@ namespace FingerSensorsApp.Models
         public int getInitFlank()
         {
             // oder verknüfung
+            int ret = 0;
             foreach (var GPIOInput in m_GPIOInputs)
             {
                 bool activ = false;
@@ -168,19 +188,31 @@ namespace FingerSensorsApp.Models
                     if ((obj.InitValue == 0) && (obj.PinValue == 1)) activ = true;
                     else if ((obj.InitValue == 1) && (obj.PinValue == 0)) activ = true;
                 }
-                else
-                {
-                    if (obj.IsFlankActive) obj.IsFlankActive = false;
-                }
 
                 if (activ && !obj.IsFlankActive)
                 {
-                    obj.IsFlankActive = true;
-                    m_LookFor = obj;
-                    return 1;
+                    long aktTicks = Environment.TickCount;
+                    long span = aktTicks - m_FlankTicks;
+                    if (span >= 300) // msec
+                    {
+                        m_FlankTicks = Environment.TickCount;
+                        obj.IsFlankActive = true;
+                        m_LookFor = obj;
+                        ret = 1;
+                    }
+                    //else
+                    //{
+                    //    bool d = true;
+                    //}
+
+                }
+                else if (obj.IsFlankActive)
+                {
+                    if ((obj.InitValue == 0) && (obj.PinValue == 0)) obj.IsFlankActive = false;
+                    else if ((obj.InitValue == 1) && (obj.PinValue == 1)) obj.IsFlankActive = false;
                 }
             }
-            return 0;
+            return ret;
         }
         /*
         public int getExecuteFlank()
@@ -243,17 +275,33 @@ namespace FingerSensorsApp.Models
 
         public bool ProcessOutput()
         {
+            bool ret = false;
 
             for (int i = 0; i < GPIOOutputs.Count; i++)
             {
-                //        GPIOOutputs[i].GPIOEnvironmentConnector.UpdateState(0);
-                GPIOOutputs[i].GPIOObject.SetValue = (GPIOOutputs[i].GPIOObject.InitValue > 0) ? 0 : 1;
-                GPIOOutputs[i].GPIOEnvironmentConnector.UpdateInputPropertySets(GPIOOutputs[i].GPIOObject);
 
-                //       GPIOOutputs[i].GPIOEnvironmentConnector.UpdateState(1);
+//                if (GPIOOutputs[i].GPIOObject.SetValue == GPIOOutputs[i].GPIOObject.InitValue)
+                {
+                    GPIOOutputs[i].GPIOObject.SetValue = (GPIOOutputs[i].GPIOObject.InitValue > 0) ? 0 : 1;
+                    GPIOOutputs[i].GPIOEnvironmentConnector.UpdateInputPropertySets(GPIOOutputs[i].GPIOObject);
+                    ret = true;
+
+                }
             }
 
-            return false;
+            return ret;
+
+        }
+
+        public bool UpdateState(int state)
+        {
+
+            for (int i = 0; i < GPIOOutputs.Count; i++)
+            {
+                GPIOOutputs[i].GPIOEnvironmentConnector.UpdateState(state);
+            }
+
+            return true;
 
         }
 
@@ -516,13 +564,16 @@ namespace FingerSensorsApp.Models
                     ProcessGPIOEvents item = m_ProcessGPIOEvents[i];
                     if (item.InputActiv())
                     {
+   
+                        removeOldEvents(); // ältere löschen, welche nach 5 sec. nicht beantwortet waren
 
                         if (item.AccessRights > 0)
                         {
 
                             if (m_Environment.SensorConnecorInitialized)
                             {
-                                m_EventQueue.Enqueue(item);
+                                ProcessGPIOEvents Processitem = new ProcessGPIOEvents(item);
+                                m_EventQueue.Enqueue(Processitem);
                                 SensorCMDs.VerifyFingerId(m_Environment.SensorInputServiceConnectorConfig);
                             }
                             else
@@ -539,7 +590,9 @@ namespace FingerSensorsApp.Models
                         }
                         else
                         {
+                            item.UpdateState(0);
                             item.ProcessOutput();
+                            item.UpdateState(1);
                             int state = -1;
                             string cmdState = "no FingerSensor used";
                             FingerEvent eventSet = createSensorEvent("John", "Doe", -1, -1, item.Ident, state, cmdState);
@@ -577,7 +630,29 @@ namespace FingerSensorsApp.Models
 
 
 
+        void removeOldEvents()
+        {
+            if (m_EventQueue.Count == 0) return;
 
+          
+            long aktTicks = Environment.TickCount;
+
+            ProcessGPIOEvents ev;
+            while (m_EventQueue.Count>0)
+            {
+                ev = m_EventQueue.Peek();
+                long span = aktTicks - ev.FlankTicks;
+                if (span >= 4500) // alle löschen, welche nach > 5000 sec. nicht beantwortet waren
+                {
+                  m_EventQueue.Dequeue();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+        }
 
 
         void Update_SEN0188_NotifyChangeState(IPropertySet Outputpropertys)
@@ -630,7 +705,7 @@ namespace FingerSensorsApp.Models
                     {
                         if (m_EventQueue.Count > 0)
                         {
-                            ev = m_EventQueue.Dequeue(); // get Event
+                           ev = m_EventQueue.Dequeue(); // get Event
                         }
                         else return;
 
@@ -651,17 +726,19 @@ namespace FingerSensorsApp.Models
                                             if (dataset.AccessRights_Bit0 || (dataset.AccessRights & ev.AccessRights) != 0) // Master Bit
                                             {
 
+                                                ev.UpdateState(0); // update inativ setzen
+
                                                 ev.ProcessOutput();
 
                                                 cmdState = String.Format("Permission to Access: {0}", ev.Ident);
                                                 eventSet = createSensorEvent(dataset.FirstName, dataset.SecondName, MatchScore, fingerId, ev.Ident, state, cmdState);
 
-                                                ev = getProcessGPIOEventsByIdent("State_OK");
-                                                if (ev != null)
+                                                ProcessGPIOEvents evOk = getProcessGPIOEventsByIdent("State_OK");
+                                                if (evOk != null)
                                                 {
-                                                    ev.ProcessOutput();
+                                                    evOk.ProcessOutput();
                                                 }
-
+                                                ev.UpdateState(1); // update aktiv setzen
 
                                             }
                                             else
@@ -670,10 +747,12 @@ namespace FingerSensorsApp.Models
                                                 state = -2;
                                                 eventSet = createSensorEvent(dataset.FirstName, dataset.SecondName, MatchScore, fingerId, ev.Ident, state, cmdState);
 
-                                                ev = getProcessGPIOEventsByIdent("State_NoPermiss");
-                                                if (ev != null)
+                                                ProcessGPIOEvents evNoPermiss = getProcessGPIOEventsByIdent("State_NoPermiss");
+                                                if (evNoPermiss != null)
                                                 {
-                                                    ev.ProcessOutput();
+                                                    evNoPermiss.UpdateState(0); // update inativ setzen
+                                                    evNoPermiss.ProcessOutput();
+                                                    evNoPermiss.UpdateState(1); // update aktiv setzen
                                                 }
 
 
@@ -691,10 +770,12 @@ namespace FingerSensorsApp.Models
                         else
                         {
                             FingerEvent eventSet = createSensorEvent("John", "Doe", -1, -1, ev.Ident, state, cmdState);
-                            ev = getProcessGPIOEventsByIdent("State_Error");
-                            if (ev != null)
+                            ProcessGPIOEvents evStateError = getProcessGPIOEventsByIdent("State_Error");
+                            if (evStateError != null)
                             {
-                                ev.ProcessOutput();
+                                evStateError.UpdateState(0); // update inativ setzen
+                                evStateError.ProcessOutput();
+                                evStateError.UpdateState(1); // update aktiv setzen
                             };
 
                             bool insert = m_FingertEventDatabase.InsertFingerEvent(eventSet);

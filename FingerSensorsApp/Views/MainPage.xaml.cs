@@ -429,8 +429,14 @@ namespace FingerSensorsApp.Views
                 GPIOObject GPIOObj = tgl.Tag as GPIOObject;
                 if (GPIOObj != null)
                 {
-                    GPIOObj.SetValue = tgl.IsOn ? 1 : 0;
-                    con.UpdateInputPropertySets(GPIOObj);
+                    bool oldValue = (GPIOObj.SetValue > 0)  ? true : false;
+
+                    if (oldValue != tgl.IsOn)
+                    {
+                        GPIOObj.SetValue = tgl.IsOn ? 1 : 0;
+                        con.UpdateInputPropertySets(GPIOObj);
+                    }
+
                 }
 
             }
