@@ -495,6 +495,12 @@ namespace FingerSensorsApp.Views
             }
         }
 
+        void resetAllOutputs_Click(Object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            // alle Ausgänge auf den Init-State setzen
+            this.m_Environment.GPIOEnvironmentConnectors.resetAllOutputs();
+        }
+
         /*
         
         void Update_SEN0188_NotifyChangeState(IPropertySet Outputpropertys)

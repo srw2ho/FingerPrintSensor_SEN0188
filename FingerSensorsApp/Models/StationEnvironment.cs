@@ -125,19 +125,52 @@ namespace FingerSensorsApp.Models
                 if (Obj != null)
                 {
                     dblValue = (double)Obj;
-                    if (GPIOObj.GPIOtyp == GPIOObject.GPIOTyp.output)
+                    if (GPIOObj.PinValue!= dblValue)
                     {
-                        if (GPIOObj.SetValue != dblValue) { 
+                        if (GPIOObj.GPIOtyp == GPIOObject.GPIOTyp.output)
+                        {
+                            if (GPIOObj.SetValue != dblValue)
+                            {
 
-                            GPIOObj.SetValue = dblValue;
-                            UpdateInputPropertySets(GPIOObj);
+                                GPIOObj.SetValue = dblValue;
+                                double PulseTime = GPIOObj.PulseTime; // save pulseTime
+                                GPIOObj.PulseTime = 0; // pulsetime set to 0
+                                UpdateInputPropertySets(GPIOObj);
+                                GPIOObj.PulseTime = PulseTime; // store back PulseTime
+                            }
                         }
+                        GPIOObj.PinValue = dblValue;
                     }
-                    GPIOObj.PinValue = dblValue;
+
                 }
             }
 
         }
+
+        public void resetAllOutputs()
+        {
+            if (m_GPIOConnectorEnable && m_GPIOConnecorInitialized)
+            {
+                UpdateState(0);
+                GPIOOBank bank = m_OutPuts;
+
+                foreach (GPIOObjects OutPuts in bank.GPIOBanks)
+                {
+                    foreach (GPIOObject OutPut in OutPuts.GPIOs)
+                    {
+                        OutPut.SetValue = OutPut.InitValue;
+                        double PulseTime = OutPut.PulseTime; // save pulseTime
+                        OutPut.PulseTime = 0; // pulsetime set to 0
+                        UpdateInputPropertySets(OutPut);
+                        OutPut.PulseTime = PulseTime; // store back PulseTime
+                    }
+
+                }
+                UpdateState(1);
+            }
+
+        }
+
 
         public void UpdateState(int updateValue)
         {
@@ -450,6 +483,18 @@ namespace FingerSensorsApp.Models
 
         }
 
+        public void resetAllOutputs()
+        {
+            for (int i = 0; i < EnvironmentConnectors.Count; i++)
+            {
+                GPIOEnvironmentConnector con = EnvironmentConnectors[i];
+
+                con.resetAllOutputs();
+
+            }
+
+        }
+
         public  void startConnectors()
         {
             for (int i = 0; i < EnvironmentConnectors.Count; i++)
@@ -461,6 +506,7 @@ namespace FingerSensorsApp.Models
             }
 
         }
+
         public void stopConnectors()
         {
             for (int i = 0; i < EnvironmentConnectors.Count; i++)

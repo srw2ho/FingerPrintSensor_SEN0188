@@ -35,6 +35,8 @@
                             -->
                 <AppBarButton x:Name="startRecording"  IsEnabled="{x:Bind Environment.ConnecorsInitialized , Mode=OneWay, Converter= {StaticResource IsEnableConverter},ConverterParameter=Negation}" Margin="0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="startRecording_Click" Width="Auto" Icon="Play" Label="Start" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
                 <AppBarButton x:Name="stopRecording"   IsEnabled="{x:Bind Environment.ConnecorsInitialized , Mode=OneWay}" Margin="0,0"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="stopRecording_Click" Width="Auto" Icon="Play" Label="Stop" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
+                <AppBarButton IsEnabled="{x:Bind Environment.ConnecorsInitialized , Mode=OneWay}" Margin="0,20"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="resetAllOutputs_Click" Width="Auto" Icon="Clear" Label="Reset Outputs" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
+
                 <!--
 
                 <AppBarButton x:Name="InitSensor"  IsEnabled="{x:Bind Environment.SensorConnecorInitialized , Mode=OneWay}" Margin="0,0" HorizontalAlignment="Center" VerticalAlignment="Stretch" Click="FingerSensorCmds_Click" Width="Auto" Icon="Download" Label="Init Sensor" ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
