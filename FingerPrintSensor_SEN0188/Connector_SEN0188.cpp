@@ -979,7 +979,12 @@ namespace FingerPrintSensor_SEN0188
 
 	void FingerPrintSensor_SEN0188::Connector_SEN0188::OnonSerialErrorReceived(Windows::Devices::SerialCommunication::SerialDevice ^sender, Windows::Devices::SerialCommunication::ErrorReceivedEventArgs ^args)
 	{
-		// throw ref new Platform::NotImplementedException();
+		Platform::String^ err = ref new String();
+
+		err = "OnSerialErrorReceived: "  + args->Error.ToString();
+		m_FailedConnectionCount = m_FailedConnectionCount + 1;
+		this->Failed(this, err);
+
 	}
 
 
