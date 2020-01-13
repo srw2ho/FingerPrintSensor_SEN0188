@@ -406,6 +406,7 @@ namespace FingerSensorsApp.Models
                 m_Connector_SEN0188.stopStreaming += Connector_SEN0188_stopStreaming;
 
                 m_Connector_SEN0188.Failed += Connector_SEN0188_Failed;
+
                 m_Connector_SEN0188.NotifyChangeState += Connector_SEN0188_NotifyChangeState;
             }
 
@@ -642,7 +643,7 @@ namespace FingerSensorsApp.Models
             {
                 ev = m_EventQueue.Peek();
                 long span = aktTicks - ev.FlankTicks;
-                if (span >= 4500) // alle löschen, welche nach > 5000 sec. nicht beantwortet waren
+                if (span >= 4500) // alle löschen, welche nach > 4500 msec. nicht beantwortet waren
                 {
                   m_EventQueue.Dequeue();
                 }

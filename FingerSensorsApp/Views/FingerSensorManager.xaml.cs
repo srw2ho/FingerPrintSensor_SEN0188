@@ -89,6 +89,7 @@ namespace FingerSensorsApp.Views
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        /*
         async private void SensorStopConnector()
         {
           //  if (m_Connector_SEN0188.ProcessingPackagesStarted)
@@ -100,10 +101,7 @@ namespace FingerSensorsApp.Views
 
         }
 
-
-
-    
-
+   
         async private void SensorStartConnector()
         {
             if (m_serDev != null)
@@ -129,6 +127,7 @@ namespace FingerSensorsApp.Views
             }
 
         }
+        */
 
         protected override void OnNavigatingFrom(Windows.UI.Xaml.Navigation.NavigatingCancelEventArgs e)
         {
@@ -266,13 +265,14 @@ namespace FingerSensorsApp.Views
 
         void stopRecording_Click(Object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            SensorStopConnector();
+            m_Environment.SensorStopConnector();
+       //     SensorStopConnector();
         }
 
 
         void startRecording_Click(Object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            SensorStartConnector();
+            m_Environment.SensorStartConnector();
 
         }
 

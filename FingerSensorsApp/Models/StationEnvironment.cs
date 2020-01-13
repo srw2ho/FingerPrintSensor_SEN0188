@@ -131,7 +131,6 @@ namespace FingerSensorsApp.Models
                         {
                             if (GPIOObj.SetValue != dblValue)
                             {
-
                                 GPIOObj.SetValue = dblValue;
                                 double PulseTime = GPIOObj.PulseTime; // save pulseTime
                                 GPIOObj.PulseTime = 0; // pulsetime set to 0
@@ -577,6 +576,7 @@ namespace FingerSensorsApp.Models
 
             var m_Banks = con.ActiveGPIOInOutBanks;
 
+            con.UpdateState(0);
             for (int i = 0; i < m_Banks.InOutBanks.Count; i++)
             {
                 GPIOOBank bank = m_Banks.InOutBanks[i];
@@ -592,7 +592,7 @@ namespace FingerSensorsApp.Models
                 }
             }
 
-
+            con.UpdateState(1);
         }
 
         public void InitializeActiveBanks()
@@ -1078,7 +1078,7 @@ namespace FingerSensorsApp.Models
             {
                 if (ConnectorSEN0188Enable)
                 {
-                    if (!m_SensorConnecorInitialized){
+                    if (!m_Connector_SEN0188.ProcessingPackagesStarted || !m_SensorConnecorInitialized){
                         TimeSpan _timeOut = TimeSpan.FromMilliseconds(1000);
                         m_serDev.BaudRate = (uint)57600;
                         m_serDev.WriteTimeout = _timeOut;
