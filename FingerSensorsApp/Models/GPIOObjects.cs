@@ -111,14 +111,15 @@ namespace FingerSensorsApp.Models
         }
         public string getPropertyLine()
         {
+            int IsFlankActive = m_IsFlankActive ? 1 : 0;
             string keyValue;
             if (m_GPIOTyp == GPIOTyp.input || m_PulseTime == 0)
             {
-                keyValue = string.Format("PinName={0}; Typ={1}; PinNumber={2}; InitValue={3}; SetValue={4}; PinValue={5}", m_PinName, m_GPIOTyp.ToString(), m_PinNumber, m_InitValue, m_SetValue, m_PinValue); ;
+                keyValue = string.Format("PinName={0}; Typ={1}; PinNumber={2}; InitValue={3}; IsFlankActive={4}; SetValue={5}; PinValue={6}", m_PinName, m_GPIOTyp.ToString(), m_PinNumber, m_InitValue, IsFlankActive, m_SetValue, m_PinValue); ;
             }
             else
             {
-                keyValue = string.Format("PinName={0}; Typ={1}; PinNumber={2}; InitValue={3}; PulseTime ={4}; SetValue={5}; PinValue={6}", m_PinName, m_GPIOTyp.ToString(), m_PinNumber, m_InitValue, m_PulseTime, m_SetValue, m_PinValue); ;
+                keyValue = string.Format("PinName={0}; Typ={1}; PinNumber={2}; InitValue={3}; PulseTime ={4}; IsFlankActive={5}; SetValue={6}; PinValue={7}", m_PinName, m_GPIOTyp.ToString(), m_PinNumber, m_InitValue, m_PulseTime, IsFlankActive, m_SetValue, m_PinValue); ;
             }
 
             return keyValue;
@@ -164,10 +165,6 @@ namespace FingerSensorsApp.Models
                     if (key == "ViewName")
                     {
                         m_ViewName = key_value;
-                    }
-                    if (key == "IsEnabled")
-                    {
-                        m_IsEnabled = Convert.ToBoolean(key_value); ;
                     }
                     if (key == "IsEnabled")
                     {

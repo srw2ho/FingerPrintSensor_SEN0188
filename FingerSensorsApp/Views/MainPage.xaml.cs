@@ -434,7 +434,9 @@ namespace FingerSensorsApp.Views
                     if (oldValue != tgl.IsOn)
                     {
                         GPIOObj.SetValue = tgl.IsOn ? 1 : 0;
+                        GPIOObj.IsFlankActive = true;
                         con.UpdateInputPropertySets(GPIOObj);
+                        GPIOObj.IsFlankActive = false;
                     }
 
                 }

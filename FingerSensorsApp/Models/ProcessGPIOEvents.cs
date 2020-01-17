@@ -283,7 +283,9 @@ namespace FingerSensorsApp.Models
 //                if (GPIOOutputs[i].GPIOObject.SetValue == GPIOOutputs[i].GPIOObject.InitValue)
                 {
                     GPIOOutputs[i].GPIOObject.SetValue = (GPIOOutputs[i].GPIOObject.InitValue > 0) ? 0 : 1;
+                    GPIOOutputs[i].GPIOObject.IsFlankActive = true;
                     GPIOOutputs[i].GPIOEnvironmentConnector.UpdateInputPropertySets(GPIOOutputs[i].GPIOObject);
+                    GPIOOutputs[i].GPIOObject.IsFlankActive = false;
                     ret = true;
 
                 }

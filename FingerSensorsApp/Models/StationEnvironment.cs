@@ -160,7 +160,9 @@ namespace FingerSensorsApp.Models
                         OutPut.SetValue = OutPut.InitValue;
                         double PulseTime = OutPut.PulseTime; // save pulseTime
                         OutPut.PulseTime = 0; // pulsetime set to 0
+                        OutPut.IsFlankActive = true; // Active set
                         UpdateInputPropertySets(OutPut);
+                        OutPut.IsFlankActive = false;
                         OutPut.PulseTime = PulseTime; // store back PulseTime
                     }
 
@@ -204,8 +206,8 @@ namespace FingerSensorsApp.Models
                 m_GPIOInputServiceConnectorConfig["Port"] = Port;
                 m_GPIOInputServiceConnectorConfig["UpdateState"] = PropertyValue.CreateInt32(0);
 
-            //    m_GPIOInputServiceConnectorConfig.Add("UpdateState", PropertyValue.CreateInt32(0));
-
+                //    m_GPIOInputServiceConnectorConfig.Add("UpdateState", PropertyValue.CreateInt32(0));
+                
                 for (int i = 0; i < m_ActiveGPIOInOutBanks.InOutBanks.Count; i++)
                 {
                     GPIOOBank bank = m_ActiveGPIOInOutBanks.InOutBanks[i];
