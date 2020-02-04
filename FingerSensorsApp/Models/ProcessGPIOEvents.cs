@@ -191,11 +191,13 @@ namespace FingerSensorsApp.Models
 
                 if (activ && !obj.IsFlankActive)
                 {
-                    long aktTicks = Environment.TickCount;
+                    long aktTicks = DateTime.Now.Ticks;
                     long span = aktTicks - m_FlankTicks;
-                    if (span >= 300) // msec
+                    TimeSpan duration = new TimeSpan(span);
+       //             if (span >= 300) // msec
+                    if (duration.TotalMilliseconds >= 300) // msec
                     {
-                        m_FlankTicks = Environment.TickCount;
+                        m_FlankTicks = aktTicks;
                         obj.IsFlankActive = true;
                         m_LookFor = obj;
                         ret = 1;
@@ -637,15 +639,17 @@ namespace FingerSensorsApp.Models
         {
             if (m_EventQueue.Count == 0) return;
 
-          
-            long aktTicks = Environment.TickCount;
+            long aktTicks = DateTime.Now.Ticks;
+          //  long aktTicks = (Environment.TickCount & Int32.MaxValue);
 
             ProcessGPIOEvents ev;
             while (m_EventQueue.Count>0)
             {
                 ev = m_EventQueue.Peek();
                 long span = aktTicks - ev.FlankTicks;
-                if (span >= 4500) // alle löschen, welche nach > 4500 msec. nicht beantwortet waren
+                TimeSpan duration = new TimeSpan(span);
+                if (duration.TotalMilliseconds >= 4500) // msec
+              //  if (span >= 4500) // alle löschen, welche nach > 4500 msec. nicht beantwortet waren
                 {
                   m_EventQueue.Dequeue();
                 }
