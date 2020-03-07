@@ -576,7 +576,7 @@ namespace FingerSensorsApp.Models
 
             if (con == null) return;
 
-            var m_Banks = con.ActiveGPIOInOutBanks;
+            var m_Banks = con.ActiveGPIOInOutBanks;     
 
             con.UpdateState(0);
             for (int i = 0; i < m_Banks.InOutBanks.Count; i++)
