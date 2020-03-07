@@ -198,9 +198,9 @@
             </ScrollViewer>
 
 
-      
-      
-            <ScrollViewer Grid.Row="0" Grid.Column ="2" Margin="0,0" VerticalScrollBarVisibility="Auto">
+
+
+            <ScrollViewer Visibility="{x:Bind Environment.ConnectorSEN0188Enable, Mode=TwoWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}" Grid.Row="0" Grid.Column ="2" Margin="0,0" VerticalScrollBarVisibility="Auto">
 
                 <StackPanel>
                     <TextBlock FontSize ="20" Text="Finger Events" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
