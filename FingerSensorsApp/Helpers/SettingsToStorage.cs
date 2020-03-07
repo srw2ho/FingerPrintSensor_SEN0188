@@ -159,7 +159,7 @@ namespace FingerSensorsApp.Helpers
                 StationEnvironment.SerDev.Handshake = (SerialHandshake) OutValue;
 
                 bok = m_localStorage.readIntegerSettingsfromLocalStorage(composite, m_localStorage.getCompositePropertyIDName("StationEnvironment.EventHistoryinDays", Idx), out IntValue);
-                if (IntValue<=0) IntValue = 14;
+                if (IntValue<=0) IntValue = 4;
                 StationEnvironment.EventHistoryinDays = IntValue;
 
             }

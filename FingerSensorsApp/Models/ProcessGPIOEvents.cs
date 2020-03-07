@@ -71,7 +71,7 @@ namespace FingerSensorsApp.Models
         inputState m_InputState;
 
         GPIOEnvironmentConnector m_GPIOEnvironmentConnector;
-        GPIOObject m_LookFor;
+       // GPIOObject m_LookFor;
         long m_FlankTicks;
         public ProcessGPIOEvents(string Ident)
         {
@@ -81,7 +81,7 @@ namespace FingerSensorsApp.Models
             m_AccessRights = 0;
             m_GPIOEnvironmentConnector = null;
             m_InputState = inputState.waitforInitFlank;
-            m_LookFor = null;
+         //   m_LookFor = null;
             m_FlankTicks = 0;
         }
 
@@ -199,7 +199,7 @@ namespace FingerSensorsApp.Models
                     {
                         m_FlankTicks = aktTicks;
                         obj.IsFlankActive = true;
-                        m_LookFor = obj;
+                     //   m_LookFor = obj;
                         ret = 1;
                     }
                     //else
@@ -442,7 +442,7 @@ namespace FingerSensorsApp.Models
             m_Connector_SEN0188.stopStreaming -= Connector_SEN0188_stopStreaming;
             m_Connector_SEN0188.NotifyChangeState -= Connector_SEN0188_NotifyChangeState;
             m_Connector_SEN0188.Failed -= Connector_SEN0188_Failed;
-
+            m_Environment.SensorConnecorInitialized = false;
 
             for (int i = 0; i < m_GPIOEnvironmentConnectors.EnvironmentConnectors.Count; i++)
             {
@@ -453,6 +453,7 @@ namespace FingerSensorsApp.Models
                     con.GPIOConnector.startStreaming -= GPIOConnector_startStreaming;
                     con.GPIOConnector.stopStreaming -= GPIOConnector_stopStreaming;
                     con.GPIOConnector.Failed -= GPIOConnector_stopStreaming;
+                    con.GPIOConnecorInitialized = false;
                 }
 
             }
@@ -572,7 +573,7 @@ namespace FingerSensorsApp.Models
    
                         removeOldEvents(); // ältere löschen, welche nach 5 sec. nicht beantwortet waren
 
-                        if (item.AccessRights > 0)
+                        if ((item.AccessRights > 0) && m_Environment.ConnectorSEN0188Enable)
                         {
 
                             if (m_Environment.SensorConnecorInitialized)
@@ -841,6 +842,7 @@ namespace FingerSensorsApp.Models
 
         }
 
+  
         public bool ProcessEvent()
         {
             ProcessGPIOEvents ev = m_EventQueue.Dequeue();
@@ -849,6 +851,8 @@ namespace FingerSensorsApp.Models
             return false;
 
         }
+
+     
 
     }
 

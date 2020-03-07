@@ -19,10 +19,16 @@
     <UseEmulator>false</UseEmulator>
     <RemoteDebugEnabled>true</RemoteDebugEnabled>
     <AuthenticationMode>Universal</AuthenticationMode>
-    <RemoteDebugMachine>Garage2</RemoteDebugMachine>
+    <RemoteDebugMachine>Eingang2</RemoteDebugMachine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
     <DebugEngines>{3B476D35-A401-11D2-AAD4-00C04F990171}</DebugEngines>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UapAppxPackageBuildMode>SideloadOnly</UapAppxPackageBuildMode>
+    <AppxShowAllApps>False</AppxShowAllApps>
+    <AppxBuildConfigurationSelection>x86|x64|arm</AppxBuildConfigurationSelection>
+    <PackageOptionalProjectsInIdeBuilds>False</PackageOptionalProjectsInIdeBuilds>
   </PropertyGroup>
 </Project>

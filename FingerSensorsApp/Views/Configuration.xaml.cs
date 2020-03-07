@@ -41,7 +41,7 @@ namespace FingerSensorsApp.Views
         FingertEventDatabase m_FingertEventDatabase;
         SEN0188SQLite m_SEN0188SQLite;
 
-        SerDevice m_serDev;
+     //   SerDevice m_serDev;
         Windows.Foundation.Collections.PropertySet m_Sensoroutputconfigoptions;
         Windows.Foundation.Collections.PropertySet m_Sensorinputconfigoptions;
         SettingsToStorage m_SettingsToStorage;
@@ -66,7 +66,7 @@ namespace FingerSensorsApp.Views
             m_listOfDevices = new ObservableCollection<FingerPrintSensor_SEN0188.SerDevice>();
             m_Sensoroutputconfigoptions = null;
             m_Sensorinputconfigoptions = null;
-            m_serDev = null;
+         //   m_serDev = null;
             m_SettingsToStorage = null;
             m_OutPuts = null;
             m_Inputs = null;
@@ -128,8 +128,8 @@ namespace FingerSensorsApp.Views
 
 
             m_Environment.GPIOEnvironmentConnectors.InitializeActiveBanks();
+            m_Environment.ProcessorGPIOEvents.Initialize();
             m_Environment.ProcessorGPIOEvents.InitializeProcessEvents();
-
 
             m_Environment.StartConnectors();
 
@@ -155,6 +155,7 @@ namespace FingerSensorsApp.Views
                     m_FingertEventDatabase = m_Environment.FingertEventDatabase;
                     m_SEN0188SQLite = m_Environment.SEN0188SQLite;
                     m_GPIOEnvironmentConnectors = m_Environment.GPIOEnvironmentConnectors;
+
 
 
                     m_Environment.StopConnectors();
