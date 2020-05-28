@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.757
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FingerPrintSensor_SEN0188", "FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188.vcxproj", "{D9767DAF-21F2-4D1D-A4A7-3C3A6689FCCB}"
 EndProject
@@ -15,8 +15,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FingerSensorsApp", "FingerS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPIOServiceConnector", "..\SharedSources\GPIOServiceConnector\GPIOServiceConnector.vcxproj", "{EE933DEB-CD73-4080-8BDA-BF95517AB28F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPIODriver", "..\SharedSources\GPIODriver\GPIODriver.vcxitems", "{0EF219F8-50D1-4FAA-9FB4-30A1C357B92A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StreamSocketComm", "..\SharedSources\StreamSocketComm\StreamSocketComm.vcxitems", "{C90BD8E0-7543-4A02-8A0C-C8A7A2292632}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimeConversion", "..\SharedSources\TimeConversion\TimeConversion\TimeConversion.vcxitems", "{5A207D16-AC3F-4E21-A7FB-58F53B2126C8}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\SharedSources\GPIODriver\GPIODriver.vcxitems*{0ef219f8-50d1-4faa-9fb4-30a1c357b92a}*SharedItemsImports = 9
+		..\SharedSources\TimeConversion\TimeConversion\TimeConversion.vcxitems*{5a207d16-ac3f-4e21-a7fb-58f53b2126c8}*SharedItemsImports = 9
+		..\SharedSources\StreamSocketComm\StreamSocketComm.vcxitems*{c90bd8e0-7543-4a02-8a0c-c8a7a2292632}*SharedItemsImports = 9
 		..\SharedSources\SerialCommunication\SerialCommunication\SerialCommunication.vcxitems*{d9767daf-21f2-4d1d-a4a7-3c3a6689fccb}*SharedItemsImports = 4
 		..\SharedSources\GPIODriver\GPIODriver.vcxitems*{ee933deb-cd73-4080-8bda-bf95517ab28f}*SharedItemsImports = 4
 		..\SharedSources\StreamSocketComm\StreamSocketComm.vcxitems*{ee933deb-cd73-4080-8bda-bf95517ab28f}*SharedItemsImports = 4
