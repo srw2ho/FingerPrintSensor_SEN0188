@@ -1,0 +1,2 @@
+MainPackage=C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerSensorsApp\bin\x64\Release\FingerSensorsApp_1.0.0.0_x64.appx
+SymbolPackage=C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerSensorsApp\obj\x64\Release\Symbols\FingerSensorsApp_1.0.0.0_x64.appxsym

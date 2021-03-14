@@ -1,0 +1,28 @@
+﻿  pch.cpp
+  ScanSerialDevices.cpp
+  SerialChunkReceiver.cpp
+  SerialCom.cpp
+  SerialHelpers.cpp
+  Connectors.cpp
+  Connector_SEN0188.cpp
+  OrderEventPackageQueue.cpp
+  ScanDevices.cpp
+  Sensor.cpp
+  SensorPackage.cpp
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\Connectors.cpp(48,27): warning C4018: '<': signed/unsigned mismatch
+  SerDevice.cpp
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\Sensor.cpp(496,26): warning C4333: '>>': right shift by too large amount, data loss
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\Sensor.cpp(497,29): warning C4333: '>>': right shift by too large amount, data loss
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\Sensor.cpp(539,25): warning C4333: '>>': right shift by too large amount, data loss
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\Sensor.cpp(540,29): warning C4333: '>>': right shift by too large amount, data loss
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\Sensor.cpp(585,25): warning C4333: '>>': right shift by too large amount, data loss
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\Sensor.cpp(586,29): warning C4333: '>>': right shift by too large amount, data loss
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\Sensor.cpp(923,42): warning C4293: '<<': shift count negative or too big, undefined behavior
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\SensorPackage.cpp(117,13): warning C4018: '<': signed/unsigned mismatch
+C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188\SensorPackage.cpp(174,35): warning C4018: '<': signed/unsigned mismatch
+     Creating library C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\Release\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188.lib and object C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\Release\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 6333 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  FingerPrintSensor_SEN0188.vcxproj -> C:\Users\wilsc\source\repos\srw2ho\FingerPrintSensor_SEN0188\Release\FingerPrintSensor_SEN0188\FingerPrintSensor_SEN0188.dll

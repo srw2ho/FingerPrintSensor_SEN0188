@@ -106,7 +106,7 @@
                                                                         <StackPanel Grid.Column="1" Grid.Row ="0" Orientation="Horizontal" Visibility="{x:Bind IsEnabled, Mode=OneWay,Converter={StaticResource BoolToVis},ConverterParameter= NoNegation}" >
                                                                             <TextBox FontSize ="16"  Header="View Name" Text="{x:Bind ViewName, Mode=TwoWay}" Width="200" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
                                                                             <TextBox FontSize ="16"  MaxLength="1"  InputScope="Number" Header="Init Value" Text="{x:Bind InitValue, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
-                                                                            <TextBox FontSize ="16"  MaxLength="4"  InputScope="Number" Header="Pulse Time" Text="{x:Bind PulseTime, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+                                                                            <TextBox FontSize ="16"  MaxLength="5"  InputScope="Number" Header="Pulse Time" Text="{x:Bind PulseTime, Mode=TwoWay}" TextWrapping="Wrap" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
                                                                         </StackPanel>
 
                                                                         <StackPanel  Grid.Column="0" Grid.Row ="1" Orientation="Vertical">
